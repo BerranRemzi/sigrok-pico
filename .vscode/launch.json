@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run upload.py without Debugging",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/upload.py",
+            "args": ["${workspaceFolder}/pico_sdk_sigrok/build/pico_sdk_sigrok.uf2"],
+            "console": "integratedTerminal"
+        }
+    ]
+}
