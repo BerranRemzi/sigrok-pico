@@ -20,6 +20,7 @@
 #include "tusb.h"//.tud_cdc_write...
 
 #include "sr_device.h"
+#include "real_pico_scope.h"
 
 //NODMA is a debug mode that disables the DMA engine and prints raw PIO FIFO outputs
 //it is limited to testing a small number of samples equal to the PIO FIFO depths
@@ -67,7 +68,7 @@ volatile bool mask_xfer_err;
 void my_stdio_usb_out_chars(const char *buf, int length) {
     static uint64_t last_avail_time;
     uint32_t owner;
-    if (tud_cdc_connected()) {
+    if (tud_ready()) {
         for (int i = 0; i < length;) {
             int n = length - i;
             int avail = (int) tud_cdc_write_available();
@@ -81,7 +82,7 @@ void my_stdio_usb_out_chars(const char *buf, int length) {
             } else {
                 tud_task();
 		tud_cdc_write_flush();
-                if (!tud_cdc_connected() ||
+                if (!tud_ready() ||
                     (!tud_cdc_write_available() && time_us_64() > last_avail_time + PICO_STDIO_USB_STDOUT_TIMEOUT_US)) {
                     break;
                 }
@@ -608,6 +609,7 @@ void core1_code(){
    volatile uint32_t *usbctrl; 
    usbctrl=(volatile uint32_t *)(USBCTRL_BASE);
    uint32_t usb_last=1,usb_curr;
+   real_pico_scope_init();
    while(true){
      //The wait for event (wfe) puts core1 in an idle state
      //Each core instruction takes a memory cycle, as does each core memory or IO register read.
@@ -631,7 +633,7 @@ void core1_code(){
         __wfe();
         __wfe(); 
 	__wfe();
-     }     
+     }
      if(dev.started==false){
       //always drain all defined uarts as if that is not done it can 
        //effect the usb serial CDC stability
@@ -640,7 +642,8 @@ void core1_code(){
        while (uart_is_readable_within_us(uart0, 0)) {
             uartch = uart_getc(uart0);
        }
-     }    
+       real_pico_scope();
+     }
      //look for commands on usb cdc 
      intin=getchar_timeout_us(0);
      //The '+' is the only character we track during normal sampling because it can end
@@ -801,7 +804,7 @@ int main(){
 */
 
    gpio_init_mask(GPIO_D_MASK); //set as GPIO_FUNC_SIO and clear output enable
-   gpio_set_dir_masked(GPIO_D_MASK,0);  //Set all to input
+   gpio_set_dir_masked(GPIO_D_MASK, GPIO_IN);  //Set all to input
     while(1){
           __sev();//send event to wake core1
           if(send_resp){

@@ -10,11 +10,11 @@
 // GP24-25 are not on the board and not used
 // GP26-28 are ADC.
 // number of analog channels
-#define NUM_A_CHAN 3
+#define NUM_A_CHAN 2
 // number of digital channels
-#define NUM_D_CHAN 21
+#define NUM_D_CHAN 7
 // Mask of bits 22:2 to use as inputs -
-#define GPIO_D_MASK 0x7FFFFC
+#define GPIO_D_MASK 0x7FFE1FC
 // Storage size of the DMA buffer.  The buffer is split into two halves so that when the first
 // buffer fills we can send the trace data serially while the other buffer is DMA'dinto
 #define DMA_BUF_SIZE 220000
