@@ -22,9 +22,9 @@
 #define GAIN_COUNT 8u
 #define BUTTON_PIN 13u
 // Define software SPI pins
-#define SPI_CS   2  // Chip Select
-#define SPI_SCK  3  // Clock
-#define SPI_MOSI 4  // MOSI (Data Out)
+#define SPI_CS   28  // Chip Select
+#define SPI_SCK  29  // Clock
+#define SPI_MOSI 15  // MOSI (Data Out)
 
 // MCP6S21 Command Definitions
 #define CMD_WRITE_GAIN  0x41  // 0b01000001 (Gain Set Command)
