@@ -4,17 +4,21 @@
 #include <stdbool.h>
 
 // Pin usage
-// GP0 and 1 are reserved for debug uart
-// GP2-GP22 are digital inputs
-// GP23 controls power supply modes and is not a board input
-// GP24-25 are not on the board and not used
-// GP26-28 are ADC.
+// GP0-1: Debug UART
+// GP2-8: Digital inputs (D2-D8) - 7 channels
+// GP9-12: LED outputs (LED1-LED4)
+// GP13: Button input
+// GP14: 1kHz square wave output (PWM)
+// GP15: SPI DATA (MOSI)
+// GP26-27: ADC0-ADC1 (2 analog channels)
+// GP28: SPI CS
+// GP29: SPI CLK
 // number of analog channels
 #define NUM_A_CHAN 2
 // number of digital channels
 #define NUM_D_CHAN 7
-// Mask of bits 22:2 to use as inputs -
-#define GPIO_D_MASK 0x7FFE1FC
+// Mask of bits for digital inputs - GP2-8 only
+#define GPIO_D_MASK 0x1FC
 // Storage size of the DMA buffer.  The buffer is split into two halves so that when the first
 // buffer fills we can send the trace data serially while the other buffer is DMA'dinto
 #define DMA_BUF_SIZE 220000

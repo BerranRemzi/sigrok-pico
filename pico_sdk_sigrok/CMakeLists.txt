@@ -12,7 +12,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD waveshare_rp2040_zero CACHE STRING "Board type")
 
 cmake_minimum_required(VERSION 3.13)
 
@@ -40,6 +40,7 @@ target_link_libraries(
     hardware_adc
     hardware_dma
     hardware_pio
+    hardware_pwm
     hardware_sync
     pico_multicore
     pico_stdio_usb

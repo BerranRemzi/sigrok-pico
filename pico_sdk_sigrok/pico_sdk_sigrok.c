@@ -642,7 +642,6 @@ void core1_code(){
        while (uart_is_readable_within_us(uart0, 0)) {
             uartch = uart_getc(uart0);
        }
-       real_pico_scope();
      }
      //look for commands on usb cdc 
      intin=getchar_timeout_us(0);
@@ -815,6 +814,7 @@ int main(){
             send_resp=false;
            }
          //Dprintf("ss %d %d",dev.sending,dev.started);
+         real_pico_scope();  // Handle gain configuration when not measuring
          if(dev.sending && (dev.started==false)) {
            //Only boost frequency during a sample so that average device power is less.
            //It's not clear that this is needed because rp2040 is pretty low power, but it can't hurt...
