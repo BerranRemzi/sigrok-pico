@@ -1,20 +1,38 @@
-This is an unofficial Pulseview windows installer to use the Raspberry Pi PICO on Windows.
+# Windows Installer (Unofficial)
 
-Github limits file sizes to 25MB but it is 40MB.  You should be able to download this without creating a Dropbox account.
+Pre-built PulseView installer for using the Raspberry Pi PICO on Windows.
 
-Revision 2 is now released, and available here.  Since this is a major release, the PICO will need a new UF2 file to match.
+> **Note**: This is an unofficial installer. For the recommended experience, use the main sigrok installer from [sigrok.org](https://sigrok.org/wiki/Downloads).
 
-https://www.dropbox.com/s/i1guje5kg89yi7a/pulseview-0.5.0-git-7e5c839-installer_rev2.exe?dl=0
+---
 
+## Downloads
 
-It is recommended that you uninstall previous versions first. 
+### Revision 2 (Current)
 
-You may need to install this to get msvcr100.dll
-https://www.microsoft.com/en-us/download/details.aspx?id=26999![image](https://user-images.githubusercontent.com/99157244/158026832-9f6b139b-6ea1-4aa0-80c2-4fb8def398fa.png)
+| File | Size | Notes |
+|------|------|-------|
+| [pulseview-0.5.0-git-7e5c839-installer_rev2.exe](https://www.dropbox.com/s/i1guje5kg89yi7a/pulseview-0.5.0-git-7e5c839-installer_rev2.exe?dl=0) | ~40 MB | Requires matching rev2 UF2 firmware |
 
-Other windows related information is here (but note the links to install mscvr100.dll are out of date).
-https://sigrok.org/wiki/Windows
+> **Important**: Revision 2 requires the new UF2 firmware file. See [pico_sdk_sigrok/release/README.md](../pico_sdk_sigrok/release/README.md).
 
-Old rev1 is here, but the old UF2 is no longer available (unless you use git pulls to get an older version).
+### Revision 1 (Deprecated)
 
-https://www.dropbox.com/s/rnktz830phgl1ag/pulseview-0.5.0-git-7e5c839-installer_rev1.exe?dl=0
+| File | Notes |
+|------|-------|
+| [pulseview-0.5.0-git-7e5c839-installer_rev1.exe](https://www.dropbox.com/s/rnktz830phgl1ag/pulseview-0.5.0-git-7e5c839-installer_rev1.exe?dl=0) | Old UF2 firmware no longer available |
+
+---
+
+## Installation
+
+1. Uninstall any previous versions
+2. Run the installer
+3. If missing `msvcr100.dll`, install [Microsoft Visual C++ 2010 Redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=26999)
+
+---
+
+## Additional Resources
+
+- [sigrok Windows Wiki](https://sigrok.org/wiki/Windows) - General Windows information
+- [Getting Started](../USER_GUIDE.md) - Setup instructions
