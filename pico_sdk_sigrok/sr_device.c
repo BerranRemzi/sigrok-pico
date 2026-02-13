@@ -166,32 +166,45 @@ int process_char(sr_device_t *d, char charin) {
       break;
     case 't': // trigger -format tvxx where v is value and xx is two digit
               // channel
-      /*HW trigger depracated
-          tmpint=d->cmdstr[1]-'0';
-               tmpint2=atoi(&(d->cmdstr[2])); //extract channel number
-         which starts at D2
-          //Dprintf("Trigger input %d val %d\n\r",tmpint2,tmpint);
-               if((tmpint2>=2)&&(tmpint>=0)&&(tmpint<=4)){
-                 d->triggered=false;
-                 switch(tmpint){
-              case 0: d->lvl0mask|=1<<(tmpint2-2);break;
-              case 1: d->lvl1mask|=1<<(tmpint2-2);break;
-              case 2: d->risemask|=1<<(tmpint2-2);break;
-              case 3: d->fallmask|=1<<(tmpint2-2);break;
-              default: d->chgmask|=1<<(tmpint2-2);break;
-            }
-                 //Dprintf("Trigger channel %d val %d
-         0x%X\n\r",tmpint2,tmpint,d->lvl0mask);
-            //Dprintf("LVL0mask 0x%X\n\r",d->lvl0mask);
-                 //Dprintf("LVL1mask 0x%X\n\r",d->lvl1mask);
-                 //Dprintf("risemask 0x%X\n\r",d->risemask);
-                 //Dprintf("fallmask 0x%X\n\r",d->fallmask);
-                 //Dprintf("edgemask 0x%X\n\r",d->chgmask);
-               }else{
-            Dprintf("bad trigger channel %d val %d\n\r",tmpint2,tmpint);
-                 d->triggered=true;
-               }
-      */
+/* HW trigger depracated */
+#ifdef HW_TRIGGER_EN
+      tmpint = d->cmdstr[1] - '0';
+      tmpint2 =
+          atoi(&(d->cmdstr[2])); // extract channel number which starts at D2
+      // Dprintf("Trigger input %d val %d\n\r",tmpint2,tmpint);
+      if ((tmpint2 >= 2) && (tmpint >= 0) && (tmpint <= 4)) {
+        d->triggered = false;
+        switch (tmpint) {
+        case 0:
+          d->lvl0mask |= 1 << (tmpint2 - 2);
+          break;
+        case 1:
+          d->lvl1mask |= 1 << (tmpint2 - 2);
+          break;
+        case 2:
+          d->risemask |= 1 << (tmpint2 - 2);
+          break;
+        case 3:
+          d->fallmask |= 1 << (tmpint2 - 2);
+          break;
+        default:
+          d->chgmask |= 1 << (tmpint2 - 2);
+          break;
+        }
+#ifdef HW_TRIGGER_DBG
+        Dprintf("Trigger channel %d val %d 0x%X\n\r", tmpint2, tmpint,
+                d->lvl0mask);
+        Dprintf("LVL0mask 0x%X\n\r", d->lvl0mask);
+        printf("LVL1mask 0x%X\n\r", d->lvl1mask);
+        Dprintf("risemask 0x%X\n\r", d->risemask);
+        Dprintf("fallmask 0x%X\n\r", d->fallmask);
+        Dprintf("edgemask 0x%X\n\r", d->chgmask);
+#endif /* HW_TRIGGER_DBG */
+      } else {
+        Dprintf("bad trigger channel %d val %d\n\r", tmpint2, tmpint);
+        d->triggered = true;
+      }
+#endif /* HW_TRIGGER_EN */
       ret = 1;
       break;
     case 'p': // pretrigger count
