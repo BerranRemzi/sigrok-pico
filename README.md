@@ -5,7 +5,7 @@ It is highly recommended to install Nightly build from https://sigrok.org/wiki/D
 Please start with the Getting Started page : https://github.com/pico-coder/sigrok-pico/blob/main/GettingStarted.md
 /////////////////////////////////////////////////////////////////
 Building this repo:
-Bbuilding is not recommended, but some people insist on trying.....)
+Building is not recommended, but some people insist on trying.....)
 
 I once did a cross compile of PulseView for windows.  The instructions and installer are left in place for historical reference, they are likely out of date.
 Instructions to download my build are here https://github.com/pico-coder/sigrok-pico/blob/main/pulseview/Readme.md
@@ -29,7 +29,7 @@ The latest libsigrok code exists as a fork at https://github.com/pico-coder/libs
 ## Files
 PICOBuildNotes.md - build notes for building the PICO device assuming you have gone through the PICO C SDK "getting started with PICO".
 
-SigrokBuildNotes.md - rough libsigrok build notes which will be depracated once raspberrypi_pico is mainline
+SigrokBuildNotes.md - rough libsigrok build notes which will be deprecated once raspberrypi_pico is mainline
 
 GettingStarted.md - quick run down on setting things up.
 

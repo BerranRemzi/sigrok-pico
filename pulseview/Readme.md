@@ -1,6 +1,6 @@
-This is an unofficial Pulseview windows installer to use the raspberry pi pico on windows.
+This is an unofficial Pulseview windows installer to use the Raspberry Pi PICO on Windows.
 
-Github limits filesizes to 25MB but it is 40MB.  You should be able to download this without creating a drobox account.
+Github limits file sizes to 25MB but it is 40MB.  You should be able to download this without creating a Dropbox account.
 
 Revision 2 is now released, and available here.  Since this is a major release, the PICO will need a new UF2 file to match.
 
