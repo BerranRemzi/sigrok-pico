@@ -1,37 +1,68 @@
-As of 28 Sept 2023 this pull request has been merged into mainline sigrok (https://github.com/sigrokproject/libsigrok/pull/181)
-It is highly recommended to install from https://sigrok.org/wiki/Downloads
-
-Please start with the Getting Started page : https://github.com/pico-coder/sigrok-pico/blob/main/GettingStarted.md
-/////////////////////////////////////////////////////////////////
-Building this repo:
-Bbuilding is not recommended, but some people insist on trying.....)
-
-I once did a cross compile of PulseView for windows.  The instructions and installer are left in place for historical reference, they are likely out of date.
-Instructions to download my build are here https://github.com/pico-coder/sigrok-pico/blob/main/pulseview/Readme.md
-Again, please use the main sigrok installer.
-
-For linux, many people have managed to combine my pull request into a libsigrok build. If you are on linux it's probably a practical experiment to try.  4GB of RAM is recommended for pulseview builds to avoid disk swap issues.  See SigrokBuildNotes.md
-
-#
 # sigrok-pico
-Use a raspberry pi pico (rp2040) as a logic analyzer and oscilloscope with sigrok.
-This implementation uses the pico SDK CDC serial library to communicate with sigrok-cli/pulseview through a sigrok driver.
 
-## Directories:
+Use a Raspberry Pi PICO (RP2040) as a logic analyzer and oscilloscope with sigrok.
 
-pico_pgen is a simple digital function generator useful for creating patterns to test.
+---
 
-pico_sdk_sigrok is the pico sdk C code for the PICO RP2040 device.
+## Project Status
 
-The latest libsigrok code exists as a fork at https://github.com/pico-coder/libsigrok
+**Merged to mainline sigrok** (September 2023)
 
-## Files
-PICOBuildNotes.md - build notes for building the PICO device assuming you have gone through the PICO C SDK "getting started with PICO".
+Install from [sigrok.org/downloads](https://sigrok.org/wiki/Downloads) for the recommended experience.
 
-SigrokBuildNotes.md - rough libsigrok build notes which will be depracated once raspberrypi_pico is mainline
+- Pull request: [#181](https://github.com/sigrokproject/libsigrok/pull/181)
 
-GettingStarted.md - quick run down on setting things up.
+---
 
-AnalyzerDetails.md - details on supported modes of the analyzer and various limitations.
+## Overview
 
-SerialProtocol.md - details of the "over the wire" protocol used between the sigrok driver and the device.
+This project implements a sigrok driver for the Raspberry Pi PICO RP2040 using the PICO SDK CDC serial library. It enables the PICO to function as:
+
+- **21-channel logic analyzer** (digital pins D2-D22)
+- **3-channel oscilloscope** (analog pins A0-A2)
+- **Mixed-signal analyzer** (combined digital + analog)
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [Getting Started](GettingStarted.md) | Initial setup and first capture |
+| [Analyzer Guide](AnalyzerGuide.md) | Complete operations reference |
+| [Technical Reference](TechnicalReference.md) | Build instructions and architecture |
+| [Serial Protocol](SerialProtocol.md) | Wire protocol specification |
+
+---
+
+## Directory Structure
+
+```
+sigrok-pico/
+├── pico_pgen/          # Digital function generator for testing
+├── pico_sdk_sigrok/    # RP2040 firmware source code
+└── pulseview/          # Windows installer (unofficial)
+```
+
+---
+
+## Quick Start
+
+1. Flash `pico_sdk_sigrok.uf2` to your PICO
+2. Install PulseView or sigrok-cli from sigrok.org
+3. See [GettingStarted.md](GettingStarted.md) for detailed instructions
+
+---
+
+## Building from Source
+
+Building is not recommended for most users. If required, see:
+
+- [TechnicalReference.md](TechnicalReference.md) for firmware build instructions
+- [pulseview/Readme.md](pulseview/Readme.md) for Windows installer notes
+
+---
+
+## License
+
+See [LICENSE](LICENSE) for details.

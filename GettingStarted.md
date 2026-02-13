@@ -1,22 +1,124 @@
-Warning: Getting the pico device to work on windows can be an initially frustrating experience, but usually the problem resolves itself.  
-Recommended steps to resolve issues:
-1) Close out any programs that access serial ports as windows won't allow multiple apps to access a port.
-2) Once pulseview is installed, do a reboot.
-3) Possibly use zadig to map the USB device (I apologize that it's been so long I can't really remember if zadig is atually needed).
-4) Try plugging/unplugging the device and/or opening closing pulseview a few times.
-5) Close pulseview, and open a serial device apps (Terraterm/Putty etc).  Send a "*" and then a "i" for identify and you should get a response. For some reason, other apps seem to have more success accessing the device than does the libserial code in pulseview.
-6) Go back and repeat any of the steps above.  (Yeah, I know it's frustrating, but eventually it seems to work for most folks).
+# Getting Started
 
-It is recommended that you read through the AnalyzerDetails.md for specifics on modes of the device, but if you just can't wait:
+Quick setup guide for the sigrok-pico logic analyzer and oscilloscope.
 
-1) Get some 1Kohm or greater resistors to put inline between the PICO inputs, you don't want to accidentally fry your PICO because you put in voltages <0V or >3.3V or accidentally jumpered ground to VCC. 
-2) Get the sigrok-pico/pico_sdk_sigrok/build/pico_sdk_sigrok.uf2 file and program it to your PICO devices (examples are online, everywhere).
-3) Install Pulseview and skip to step 7, or sigrok-cli - follow descriptions from the sigrok pages for both.
-4) Replug the PICO to reset it, and then use sigrok-cli to scan for avaliable serial ports
-> sigrok-cli --list-serial
-5) Use sigrok-cli to scan for the device based on the serial port you found above. The baudrate doesn't matter because we are CDC serial.
-> sigrok-cli  -l 2 -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 --scan 
-6) Do a first trace 
-> ~/github/sigrok-cli/sigrok-cli  -l 2 -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 --config samplerate=10000  --channels D2,D3,D4,D5 --samples 1000
-7) Aternatively to using sigrok-cli use Pulseview.
-8) Go read AnalyzerDetails.md like you should have to begin with....
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Installation](#installation)
+3. [First Capture](#first-capture)
+4. [Troubleshooting](#troubleshooting)
+
+---
+
+## Prerequisites
+
+### Hardware
+
+- Raspberry Pi PICO (RP2040)
+- USB cable (data-capable)
+- **Recommended**: ≥1 kΩ resistors for input protection
+
+> **Warning**: Always use current-limiting resistors between signal sources and PICO inputs. Voltages outside 0V-3.3V can damage the device.
+
+### Software
+
+Install PulseView or sigrok-cli from [sigrok.org/downloads](https://sigrok.org/wiki/Downloads).
+
+---
+
+## Installation
+
+### Step 1: Flash the Firmware
+
+1. Hold the BOOTSEL button while connecting the PICO via USB
+2. Copy `pico_sdk_sigrok.uf2` to the RPI-RP2 drive
+3. The PICO will reboot automatically
+
+### Step 2: Verify Connection
+
+```bash
+# List available serial ports
+sigrok-cli --list-serial
+
+# Scan for the device (replace /dev/ttyACM0 with your port)
+sigrok-cli -l 2 -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 --scan
+```
+
+**Note**: The baud rate parameter is ignored for CDC serial devices.
+
+---
+
+## First Capture
+
+### Using sigrok-cli
+
+```bash
+# Basic 4-channel digital capture at 10 KHz
+sigrok-cli -l 2 \
+  -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 \
+  --config samplerate=10000 \
+  --channels D2,D3,D4,D5 \
+  --samples 1000
+```
+
+### Using PulseView
+
+1. Launch PulseView
+2. Click "Connect to Device"
+3. Select "raspberrypi_pico" driver
+4. Set the serial port (e.g., `/dev/ttyACM0` or `COM3`)
+5. Configure sample rate and channels
+6. Click "Run"
+
+---
+
+## Troubleshooting
+
+### Windows Serial Port Issues
+
+Windows serial port access can be problematic. Try these steps in order:
+
+1. **Close conflicting applications** - Windows doesn't allow multiple apps to access the same port
+
+2. **Reboot after installation** - Restart after installing PulseView
+
+3. **Check USB driver** - Zadig may be required to map the USB device (not always needed)
+
+4. **Cycle the connection** - Unplug/replug the PICO and restart PulseView
+
+5. **Test with a terminal** - Open a serial terminal (TeraTerm, PuTTY), send `*` then `i` to verify device response:
+   ```
+   > *
+   > i
+   SRPICO,A03D21,00
+   ```
+
+6. **Repeat steps** - The issue often resolves after several attempts
+
+### Common Problems
+
+| Symptom | Solution |
+|---------|----------|
+| Device not found | Check USB cable is data-capable, try different port |
+| No serial ports listed | Install PICO firmware, check BOOTSEL not pressed |
+| Connection timeout | Close other serial apps, reboot, try terminal test |
+| Sample rate errors | See [AnalyzerGuide.md](AnalyzerGuide.md) for rate limits |
+
+### Debug Output
+
+For detailed diagnostics, run with debug level 2:
+
+```bash
+sigrok-cli -l 2 ...
+```
+
+---
+
+## Next Steps
+
+- Read [AnalyzerGuide.md](AnalyzerGuide.md) for channel configuration, trigger modes, and sample rate details
+- See [TechnicalReference.md](TechnicalReference.md) for build instructions
+- Refer to [SerialProtocol.md](SerialProtocol.md) for protocol documentation
