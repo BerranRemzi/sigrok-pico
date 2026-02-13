@@ -110,9 +110,9 @@ When no trigger specified, device immediately captures a fixed-length trace.
 
 ### Hardware Trigger (Removed in Rev2)
 
-HW triggering was removed because:
-- Processing overhead reduced streaming rate below SW trigger performance
-- No clear UI method to specify HW vs SW triggering
+Hardware triggering was removed because:
+- The implementation's processing overhead reduced streaming rates below software trigger performance
+- No clear UI method existed to distinguish between hardware and software triggering
 
 ---
 
@@ -141,10 +141,12 @@ HW triggering was removed because:
 
 ## Sample Rates
 
-### Quick Reference Table
+Select the number of enabled digital and analog channels along with the number of samples to determine the maximum sample rate and its limiting factor.
 
-| Digital | Analog | Samples | Max Rate | Limiting Factor |
-|---------|--------|---------|----------|-----------------|
+### Configuration Table
+
+| Digital Channels | Analog Channels | Number of Samples | Max Sample Rate | Limiting Factor |
+|------------------|-----------------|-------------------|-----------------|-----------------|
 | 1-4 | 0 | ≤400K | 120 Msps | PIO |
 | 1-4 | 0 | >400K | 500 Ksps+RLE | USB w/ RLE |
 | 5-7 | 0 | ≤200K | 120 Msps | PIO |
@@ -153,17 +155,32 @@ HW triggering was removed because:
 | 8-14 | 0 | >100K | 250 Ksps+RLE | USB w/ RLE |
 | 15-21 | 0 | ≤50K | 120 Msps | PIO |
 | 15-21 | 0 | >50K | 167 Ksps+RLE | USB w/ RLE |
-| 0 | 1 | any | 500 Ksps | ADC |
-| 0 | 2 | any | 250 Ksps | ADC |
-| 0 | 3 | any | 160 Ksps | ADC |
+| 0 | 1 | ≤200K | 500 Ksps | ADC |
+| 0 | 1 | >200K | 500 Ksps | USB & ADC |
+| 0 | 2 | ≤100K | 250 Ksps | ADC |
+| 0 | 2 | >100K | 250 Ksps | USB & ADC |
+| 0 | 3 | ≤67K | 160 Ksps | ADC |
+| 0 | 3 | >67K | 160 Ksps | USB & ADC |
+| 1-7 | 1 | ≤100K | 500 Ksps | ADC |
+| 1-7 | 1 | >100K | 250 Ksps | USB |
+| 1-7 | 2 | ≤67K | 250 Ksps | ADC |
+| 1-7 | 2 | >67K | 160 Ksps | ADC & USB |
+| 1-7 | 3 | ≤50K | 160 Ksps | ADC |
+| 1-7 | 3 | >50K | 125 Ksps | USB & ADC |
+| 8-14 | 1 | ≤67K | 500 Ksps | ADC |
+| 8-14 | 1 | >67K | 160 Ksps | USB |
+| 8-14 | 2 | ≤50K | 250 Ksps | ADC |
+| 8-14 | 2 | >50K | 125 Ksps | USB |
+| 8-14 | 3 | ≤40K | 160 Ksps | ADC |
+| 8-14 | 3 | >40K | 100 Ksps | USB |
 
 ### Limiting Factors
 
-| Factor | Limit |
-|--------|-------|
-| PIO | 120 MHz (max sysclk) |
-| ADC | 500 Ksps (shared across channels) |
-| USB | 400-800 KB/sec (host-dependent) |
+| Factor | Limit | Description |
+|--------|-------|-------------|
+| PIO | 120 MHz | Maximum system clock for programmable I/O |
+| ADC | 500 Ksps | Shared across all enabled analog channels |
+| USB | 400-800 KB/sec | Varies by host; affects USB-limited sample rates |
 
 ### RLE Optimization
 
@@ -173,7 +190,7 @@ Run Length Encoding reduces bandwidth for sparse signals:
 Effective rate = listed max × (1 / activity_factor)
 ```
 
-Example: 25% activity factor with 1-4 digital channels can support ~2 Msps.
+Example: 25% activity factor with 1-4 digital channels can support ~2 Msps. The RLE algorithm for 1-4 digital channels is more wire-efficient than for 5-21 channels.
 
 ### Hard Limits
 

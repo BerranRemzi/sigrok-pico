@@ -15,9 +15,9 @@ UF2 files for the sigrok-pico project.
 
 ---
 
-## Major 2025 Rewrite
+## Major 2025 Refactor
 
-The 2025 rewrite includes:
+The 2025 refactor includes:
 - Redone DMA programming
 - RP2350 (PICO 2) support
 - 26 and 32 pin digital input modes
@@ -44,4 +44,4 @@ The 2025 rewrite includes:
 
 ## Recommendation
 
-For new projects, use the 2025 rewrite UF2 files for RP2350 support or 26/32 digital pin support.
+For new projects, use the 2025 refactor UF2 files for RP2350 support or 26/32 digital pin support.

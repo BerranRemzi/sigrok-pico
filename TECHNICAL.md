@@ -9,16 +9,45 @@ Build instructions and serial protocol specification for sigrok-pico developers.
 1. [Building the Firmware](#building-the-firmware)
 2. [Building libsigrok](#building-libsigrok)
 3. [Serial Protocol](#serial-protocol)
+4. [Coding Guidelines](#coding-guidelines)
 
 ---
+
+## Coding Guidelines
+
+This project uses VSCode's built-in LLVM-based formatter for C code consistency.
+
+### Setup
+
+1. Open VSCode settings (`Ctrl+,`)
+2. Enable "Format on Save" (`editor.formatOnSave`)
+3. Set `C_Cpp.clang_format_style` to `LLVM`
+
+### Configuration
+
+The project uses default LLVM style formatting. Key conventions:
+
+- Indent width: 2 spaces
+- Column limit: 80 characters
+
+> Run "Format Document" (`Shift+Alt+F`) before committing to ensure consistent code style.
 
 ## Building the Firmware
 
 ### Prerequisites
 
-Complete the Raspberry Pi PICO C SDK "getting-started-with-pico" guide first.
+Install the "Raspberry Pi Pico Project" extension in VSCode.
 
-### Build Steps
+### Build Steps (VSCode Extension)
+
+1. Import the project using the Raspberry Pi Pico extension
+2. Select the latest SDK version when prompted
+3. Select the board type from existing options (e.g., `pico` or `pico2`)
+4. Click "Run Project (USB)" to build and flash
+
+### Build Steps (Command Line)
+
+Alternatively, build from the command line:
 
 ```bash
 # 1. Clone the repository

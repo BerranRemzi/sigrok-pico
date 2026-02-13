@@ -27,13 +27,25 @@ sigrok-pico/
 
 ## Overview
 
-This project implements a sigrok driver for the Raspberry Pi PICO RP2040 using the PICO SDK CDC serial library:
+This project implements a sigrok driver for the Raspberry Pi PICO RP2040 using the PICO SDK CDC serial library. It works with both **PulseView** (GUI) and **sigrok-cli** (command-line):
 
 - **21 digital channels** (D2-D22)
 - **3 analog channels** (A0-A2)
 - **Mixed-mode capture** (combined digital + analog)
 
+### Using with PulseView
+
+PulseView is the recommended graphical interface for sigrok-pico:
+
+1. Install PulseView from [sigrok.org/downloads](https://sigrok.org/wiki/Downloads)
+2. Flash the PICO with the appropriate UF2 firmware
+3. In PulseView, select "raspberrypi_pico" driver and configure the serial port
+
+> **Note**: PulseView 0.4.2 does not support sigrok-pico. Use a newer version or the [unofficial Windows installer](pulseview/Readme.md).
+
 ## Firmware
+
+### Precompiled
 
 Pre-compiled UF2 files are available in [`pico_sdk_sigrok/release/`](pico_sdk_sigrok/release/):
 
@@ -44,9 +56,17 @@ Pre-compiled UF2 files are available in [`pico_sdk_sigrok/release/`](pico_sdk_si
 | pico_dig32.uf2 | 32-channel digital |
 | pico2_*.uf2 | PICO 2 variants |
 
-## Building
+### Build Your Own
 
-Building is not recommended for most users. If needed, see [TECHNICAL.md](TECHNICAL.md).
+Building is straightforward using the VSCode extension:
+
+1. Install the "Raspberry Pi Pico Project" extension in VSCode
+2. Import the project using the extension
+3. Select the latest SDK version when prompted
+4. Select the board type (e.g., `pico` or `pico2`)
+5. Click "Run Project (USB)" to build and flash
+
+For command-line builds and more details, see [TECHNICAL.md](TECHNICAL.md).
 
 ## License
 
