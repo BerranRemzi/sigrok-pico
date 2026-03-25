@@ -2,6 +2,8 @@
 
 Complete reference for using the sigrok-pico logic analyzer and oscilloscope.
 
+For branch context and hardware scope, see [README.md](README.md).
+
 > **Tip**: Run sigrok-cli or PulseView at debug level 2 (`-l 2`) to see configuration issues.
 
 ---
@@ -18,21 +20,18 @@ Complete reference for using the sigrok-pico logic analyzer and oscilloscope.
 
 ## Channels
 
-### Digital Channels (21)
+### Digital Channels (7)
 
-| Channel | Pin | Notes |
-|---------|-----|-------|
-| D2-D22 | Board pins | Must be enabled contiguously starting from D2 |
+- Channel range: D2-D8
+- Pin source: board digital pins
+- Rule: channels must be enabled contiguously starting from D2
 
-**Enable Rule**: Channels must be enabled sequentially from D2 toward D22. You cannot skip channels.
+**Enable Rule**: Channels must be enabled sequentially from D2 toward D8. You cannot skip channels.
 
-### Analog Channels (3)
+### Analog Channels (2)
 
-| Channel | ADC | Pin |
-|---------|-----|-----|
-| A0 | ADC0 | 31 |
-| A1 | ADC1 | 32 |
-| A2 | ADC2 | 34 |
+- A0 uses ADC0 on pin 31
+- A1 uses ADC1 on pin 32
 
 **Accuracy**: 7-bit effective (128 divisions, ~20mV resolution)
 

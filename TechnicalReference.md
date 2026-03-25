@@ -2,6 +2,8 @@
 
 Build instructions and technical details for sigrok-pico developers.
 
+For branch overview and user-first navigation, see [README.md](README.md).
+
 ---
 
 ## Table of Contents
@@ -26,8 +28,8 @@ Complete the Raspberry Pi PICO C SDK "getting-started-with-pico" guide first.
 git clone https://github.com/pico-coder/sigrok-pico.git
 cd sigrok-pico
 
-# 2. Copy the SDK import file
-cp <pico-sdk-path>/pico_sdk_import.cmake .
+# 2. Enter firmware directory
+cd pico_sdk_sigrok
 
 # 3. Set SDK path
 export PICO_SDK_PATH=<path-to-pico-sdk>
@@ -40,7 +42,7 @@ make
 
 ### Output
 
-The build produces `pico_sdk_sigrok.uf2` in the `build` directory. Flash this file to your PICO using the standard UF2 bootloader method.
+The build produces `pico_sdk_sigrok.uf2` in `pico_sdk_sigrok/build`. Flash this file to your RP2040 Zero using the standard UF2 bootloader method.
 
 ---
 

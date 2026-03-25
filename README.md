@@ -1,68 +1,74 @@
-# sigrok-pico
+# sigrok-pico (RealPicoScope Branch)
 
-Use a Raspberry Pi PICO (RP2040) as a logic analyzer and oscilloscope with sigrok.
+Hardware-focused sigrok firmware for a custom RP2040 Zero board with protected inputs, programmable analog gain, and direct PulseView/sigrok-cli support.
 
----
+## What This Branch Is
 
-## Project Status
+This branch targets the RealPicoScope hardware variant, not the generic upstream board profile.
 
-**Merged to mainline sigrok** (September 2023)
+- Board target: Waveshare RP2040 Zero
+- Digital capture: 7 channels (D2-D8)
+- Analog capture: 2 channels (A0-A1)
+- Analog front-end: MCP6S21 programmable gain stages (1x to 32x)
+- Extra hardware controls: gain button, LED gain indicators, 1 kHz test output
 
-Install from [sigrok.org/downloads](https://sigrok.org/wiki/Downloads) for the recommended experience.
+Mainline sigrok support was merged in 2023, but this branch keeps custom hardware integration and calibration behavior specific to the RealPicoScope design.
 
-- Pull request: [#181](https://github.com/sigrokproject/libsigrok/pull/181)
+## Quick Start (General Users)
 
----
+1. Download or build the firmware UF2 for this branch.
+2. Put RP2040 Zero into BOOTSEL mode and copy the UF2 file.
+3. Install PulseView/sigrok-cli from [sigrok.org/downloads](https://sigrok.org/wiki/Downloads).
+4. Connect to driver `raspberrypi-pico` and start with a low sample rate.
+5. Use [GettingStarted.md](GettingStarted.md) for first-capture steps and troubleshooting.
 
-## Overview
+## Hardware Overview
 
-This project implements a sigrok driver for the Raspberry Pi PICO RP2040 using the PICO SDK CDC serial library. It enables the PICO to function as:
+RealPicoScope hardware adds instrumentation features on top of RP2040:
 
-- **21-channel logic analyzer** (digital pins D2-D22)
-- **3-channel oscilloscope** (analog pins A0-A2)
-- **Mixed-signal analyzer** (combined digital + analog)
+- Analog divider network sized for higher-voltage measurement at the ADC input.
+- MCP6S21 gain control (1, 2, 4, 5, 8, 10, 16, 32).
+- Protected digital input path for embedded debugging workflows.
+- Front-panel workflow helpers: pushbutton gain step and LED gain display.
+- Built-in 1 kHz test output for probe checks.
 
----
+For extended hardware description and assembly notes, see [oshlab.md](oshlab.md).
 
-## Documentation
+## Choose Your Path
 
-| Document | Purpose |
-|----------|---------|
-| [Getting Started](GettingStarted.md) | Initial setup and first capture |
-| [Analyzer Guide](AnalyzerGuide.md) | Complete operations reference |
-| [Technical Reference](TechnicalReference.md) | Build instructions and architecture |
-| [Serial Protocol](SerialProtocol.md) | Wire protocol specification |
+- First-time setup and first measurement: [GettingStarted.md](GettingStarted.md)
+- Capture modes, trigger behavior, and sample-rate guidance: [AnalyzerGuide.md](AnalyzerGuide.md)
+- Build details and firmware architecture: [TechnicalReference.md](TechnicalReference.md)
+- Driver wire protocol details: [SerialProtocol.md](SerialProtocol.md)
+- Windows PulseView installer notes: [pulseview/Readme.md](pulseview/Readme.md)
 
----
+## Repository Layout (Logical)
 
-## Directory Structure
-
-```
+```text
 sigrok-pico/
-├── pico_pgen/          # Digital function generator for testing
-├── pico_sdk_sigrok/    # RP2040 firmware source code
-└── pulseview/          # Windows installer (unofficial)
+|-- README.md                 # Branch landing page (this file)
+|-- GettingStarted.md         # User onboarding and troubleshooting
+|-- AnalyzerGuide.md          # Runtime usage limits and best practices
+|-- TechnicalReference.md     # Build + firmware architecture
+|-- SerialProtocol.md         # Device protocol details
+|-- oshlab.md                 # Detailed hardware/assembly context
+|
+|-- pico_sdk_sigrok/          # Main firmware source for RealPicoScope
+|   |-- real_pico_scope.c     # Hardware controls (gain, LED, button, test wave)
+|   |-- real_pico_scope.h     # Divider/gain-related constants and API
+|   |-- sr_device.c/.h        # Capture engine and channel configuration
+|   `-- build/                # Generated artifacts (uf2/elf/map), not source-of-truth
+|
+|-- pico_pgen/                # Optional pulse generator helper project
+`-- pulseview/                # Host-side notes/tools (Windows-focused)
 ```
 
----
+## Branch-Specific Notes
 
-## Quick Start
-
-1. Flash `pico_sdk_sigrok.uf2` to your PICO
-2. Install PulseView or sigrok-cli from sigrok.org
-3. See [GettingStarted.md](GettingStarted.md) for detailed instructions
-
----
-
-## Building from Source
-
-Building is not recommended for most users. If required, see:
-
-- [TechnicalReference.md](TechnicalReference.md) for firmware build instructions
-- [pulseview/Readme.md](pulseview/Readme.md) for Windows installer notes
-
----
+- Firmware compiles `real_pico_scope.c` into the primary target in [pico_sdk_sigrok/CMakeLists.txt](pico_sdk_sigrok/CMakeLists.txt).
+- Pin mapping and channel counts are defined in [pico_sdk_sigrok/sr_device.h](pico_sdk_sigrok/sr_device.h).
+- Analog divider constants and gain API are defined in [pico_sdk_sigrok/real_pico_scope.h](pico_sdk_sigrok/real_pico_scope.h).
 
 ## License
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE).

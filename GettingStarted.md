@@ -1,6 +1,8 @@
 # Getting Started
 
-Quick setup guide for the sigrok-pico logic analyzer and oscilloscope.
+Quick setup guide for the RealPicoScope branch of sigrok-pico.
+
+This guide assumes the custom RP2040 Zero hardware used in this branch. For branch overview and document map, see [README.md](README.md).
 
 ---
 
@@ -17,11 +19,11 @@ Quick setup guide for the sigrok-pico logic analyzer and oscilloscope.
 
 ### Hardware
 
-- Raspberry Pi PICO (RP2040)
+- RealPicoScope board (Waveshare RP2040 Zero based)
 - USB cable (data-capable)
-- **Recommended**: ≥1 kΩ resistors for input protection
+- Test leads/probes for digital and analog channels
 
-> **Warning**: Always use current-limiting resistors between signal sources and PICO inputs. Voltages outside 0V-3.3V can damage the device.
+> **Warning**: Respect branch hardware limits. Digital inputs are 0-3.3V domain. Analog limits depend on the divider/gain front-end used on your board build.
 
 ### Software
 
@@ -56,7 +58,7 @@ sigrok-cli -l 2 -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 -
 ### Using sigrok-cli
 
 ```bash
-# Basic 4-channel digital capture at 10 KHz
+# Basic 4-channel digital capture at 10 KHz (D2-D5)
 sigrok-cli -l 2 \
   -d raspberrypi-pico:conn=/dev/ttyACM0:serialcomm=115200/flow=0 \
   --config samplerate=10000 \
@@ -73,6 +75,8 @@ sigrok-cli -l 2 \
 5. Configure sample rate and channels
 6. Click "Run"
 
+> **Tip**: This branch uses 7 digital channels (D2-D8) and 2 analog channels (A0-A1).
+
 ---
 
 ## Troubleshooting
@@ -83,29 +87,28 @@ Windows serial port access can be problematic. Try these steps in order:
 
 1. **Close conflicting applications** - Windows doesn't allow multiple apps to access the same port
 
-2. **Reboot after installation** - Restart after installing PulseView
+1. **Reboot after installation** - Restart after installing PulseView
 
-3. **Check USB driver** - Zadig may be required to map the USB device (not always needed)
+1. **Check USB driver** - Zadig may be required to map the USB device (not always needed)
 
-4. **Cycle the connection** - Unplug/replug the PICO and restart PulseView
+1. **Cycle the connection** - Unplug/replug the PICO and restart PulseView
 
-5. **Test with a terminal** - Open a serial terminal (TeraTerm, PuTTY), send `*` then `i` to verify device response:
-   ```
+1. **Test with a terminal** - Open a serial terminal (TeraTerm, PuTTY), send `*` then `i` to verify device response:
+
+  ```text
    > *
    > i
    SRPICO,A03D21,00
    ```
 
-6. **Repeat steps** - The issue often resolves after several attempts
+1. **Repeat steps** - The issue often resolves after several attempts
 
 ### Common Problems
 
-| Symptom | Solution |
-|---------|----------|
-| Device not found | Check USB cable is data-capable, try different port |
-| No serial ports listed | Install PICO firmware, check BOOTSEL not pressed |
-| Connection timeout | Close other serial apps, reboot, try terminal test |
-| Sample rate errors | See [AnalyzerGuide.md](AnalyzerGuide.md) for rate limits |
+- Device not found: check USB cable is data-capable and try a different USB port.
+- No serial ports listed: ensure firmware is flashed and BOOTSEL is not held.
+- Connection timeout: close other serial applications, reboot, then retry terminal test.
+- Sample-rate errors: see [AnalyzerGuide.md](AnalyzerGuide.md) for capture limits.
 
 ### Debug Output
 
