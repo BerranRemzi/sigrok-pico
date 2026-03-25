@@ -32,7 +32,7 @@ RealPicoScope hardware adds instrumentation features on top of RP2040:
 - Front-panel workflow helpers: pushbutton gain step and LED gain display.
 - Built-in 1 kHz test output for probe checks.
 
-For extended hardware description and assembly notes, see [oshlab.md](oshlab.md).
+For extended hardware description and assembly notes, see [hardware.md](hardware.md).
 
 ## Choose Your Path
 
@@ -51,13 +51,18 @@ sigrok-pico/
 |-- AnalyzerGuide.md          # Runtime usage limits and best practices
 |-- TechnicalReference.md     # Build + firmware architecture
 |-- SerialProtocol.md         # Device protocol details
-|-- oshlab.md                 # Detailed hardware/assembly context
+|-- hardware.md               # Detailed hardware/assembly context
 |
 |-- pico_sdk_sigrok/          # Main firmware source for RealPicoScope
 |   |-- real_pico_scope.c     # Hardware controls (gain, LED, button, test wave)
 |   |-- real_pico_scope.h     # Divider/gain-related constants and API
 |   |-- sr_device.c/.h        # Capture engine and channel configuration
 |   `-- build/                # Generated artifacts (uf2/elf/map), not source-of-truth
+|
+|-- hw/                       # Hardware media (photos, 3D view, schematic)
+|   |-- image/
+|   |-- 3d/
+|   `-- schematic/
 |
 |-- pico_pgen/                # Optional pulse generator helper project
 `-- pulseview/                # Host-side notes/tools (Windows-focused)

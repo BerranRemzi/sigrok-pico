@@ -98,7 +98,7 @@ Windows serial port access can be problematic. Try these steps in order:
   ```text
    > *
    > i
-   SRPICO,A03D21,00
+  SRPICO,A021D07,02
    ```
 
 1. **Repeat steps** - The issue often resolves after several attempts

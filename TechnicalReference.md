@@ -19,7 +19,7 @@ For branch overview and user-first navigation, see [README.md](README.md).
 
 ### Prerequisites
 
-Complete the Raspberry Pi PICO C SDK "getting-started-with-pico" guide first.
+Complete the Raspberry Pi Pico SDK setup first (toolchain + Pico SDK path).
 
 ### Build Steps
 
@@ -88,7 +88,7 @@ The PIO and ADC share a common sample rate because:
 
 ### DMA Implementation
 
-The DMA engine reads from PIO FIFO and writes to memory. For 8+ digital channels at high rates, the DMA requires read-modify-write operations, limiting reliable operation to ≤60 Msps.
+The DMA engine reads from PIO FIFO and writes to memory. For wider digital captures (>4 channels), read-modify-write handling increases processing load and can reduce reliable streaming rates on slower hosts.
 
 ---
 

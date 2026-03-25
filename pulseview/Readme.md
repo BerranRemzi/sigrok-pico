@@ -1,6 +1,6 @@
 # Windows Installer (Unofficial)
 
-Pre-built PulseView installer for using the Raspberry Pi PICO on Windows.
+Pre-built PulseView installer notes for using this RealPicoScope branch on Windows.
 
 ---
 

@@ -112,28 +112,14 @@ The trigger conditions are still sent to the device, but HW triggering provides 
 | 1-4 | 0 | >400K | 500 Ksps+RLE | USB w/ RLE |
 | 5-7 | 0 | ≤200K | 120 Msps | PIO |
 | 5-7 | 0 | >200K | 500 Ksps+RLE | USB w/ RLE |
-| 8-14 | 0 | ≤100K | 120 Msps | PIO |
-| 8-14 | 0 | >100K | 250 Ksps+RLE | USB w/ RLE |
-| 15-21 | 0 | ≤50K | 120 Msps | PIO |
-| 15-21 | 0 | >50K | 167 Ksps+RLE | USB w/ RLE |
 | 0 | 1 | ≤200K | 500 Ksps | ADC |
 | 0 | 1 | >200K | 500 Ksps | USB & ADC |
 | 0 | 2 | ≤100K | 250 Ksps | ADC |
 | 0 | 2 | >100K | 250 Ksps | USB & ADC |
-| 0 | 3 | ≤67K | 160 Ksps | ADC |
-| 0 | 3 | >67K | 160 Ksps | USB & ADC |
 | 1-7 | 1 | ≤100K | 500 Ksps | ADC |
 | 1-7 | 1 | >100K | 250 Ksps | USB |
 | 1-7 | 2 | ≤67K | 250 Ksps | ADC |
 | 1-7 | 2 | >67K | 160 Ksps | ADC & USB |
-| 1-7 | 3 | ≤50K | 160 Ksps | ADC |
-| 1-7 | 3 | >50K | 125 Ksps | USB & ADC |
-| 8-14 | 1 | ≤67K | 500 Ksps | ADC |
-| 8-14 | 1 | >67K | 160 Ksps | USB |
-| 8-14 | 2 | ≤50K | 250 Ksps | ADC |
-| 8-14 | 2 | >50K | 125 Ksps | USB |
-| 8-14 | 3 | ≤40K | 160 Ksps | ADC |
-| 8-14 | 3 | >40K | 100 Ksps | USB |
 
 ### Limiting Factors
 
@@ -154,7 +140,7 @@ Effective rate = listed max × (1 / activity_factor)
 
 **Example**: 25% activity factor with 1-4 digital channels can support ~2 Msps.
 
-The RLE algorithm for 1-4 channels is more efficient than for 5-21 channels.
+The RLE algorithm for 1-4 channels is more efficient than for 5-7 channels.
 
 ### Hard Limits
 

@@ -41,8 +41,8 @@ Send command followed by `\n` or `\r`. Device returns a string response or times
 
 | Command | Response Format | Description |
 |---------|-----------------|-------------|
-| `i` | `SRPICO,AxxDyy,00` | **Identify** - `Axx` = analog channel count, `Dyy` = digital channel count. Example: `SRPICO,A03D21,00` |
-| `aX` | `aaaaxbbbbb` | **Analog Scale** - Returns scale/offset for channel X. `aaaa` = scale (µV), `bbbbb` = offset (µV). Combined length ≤18 chars. Supports negative signs. |
+| `i` | `SRPICO,AxyyDzz,02` | **Identify** - `Axyy`: analog channel count and analog bytes-per-sample, `Dzz`: digital channel count. Example: `SRPICO,A021D07,02` |
+| `aX` | `<scale_uv>x0` | **Analog Scale** - Returns input scale for channel X in µV/step and zero offset. Scale is computed from ADC reference, input divider, and current PGA gain. |
 
 ### Commands with ACK Response
 
@@ -52,8 +52,8 @@ Device returns `*` on success, nothing on error (driver timeout).
 |---------|--------|-------------|
 | `R` | `R<rate>` | **Sample Rate** - Decimal value, e.g., `R100000` |
 | `L` | `L<count>` | **Sample Limit** - Decimal value, e.g., `L5000` |
-| `A` | `A<en><ch>` | **Analog Channel** - `en`: 0=disable, 1=enable. `ch`: channel number. Example: `A103` enables A3 |
-| `D` | `D<en><ch>` | **Digital Channel** - Same format as analog. Example: `D020` disables D20 |
+| `A` | `A<en><ch>` | **Analog Channel** - `en`: 0=disable, 1=enable. `ch`: channel index. Example: `A100` enables A0 |
+| `D` | `D<en><ch>` | **Digital Channel** - `en`: 0=disable, 1=enable. `ch`: GPIO/channel index. Example: `D102` enables D2 |
 
 ### Commands Without Response
 
@@ -78,13 +78,12 @@ Used when analog channels are enabled OR >4 digital channels are enabled.
 
 **Analog**: 7-bit sample value per channel.
 
-**Example**: 14 digital channels (D2-D15) + 2 analog channels (A0-A1):
+**Example**: 7 digital channels (D2-D8) + 2 analog channels (A0-A1):
 
 ```
-Slice: 0x8F, 0xA3, 0x91, 0xB6
-        │     │     │     └── A1 = 0x36
-        │     │     └──────── A0 = 0x11
-        │     └────────────── D15:D9 = 0x23
+Slice: 0x8F, 0x91, 0xB6
+        │     │     └──────── A1 = 0x36
+        │     └────────────── A0 = 0x11
         └──────────────────── D8:D2 = 0x0F
 ```
 
