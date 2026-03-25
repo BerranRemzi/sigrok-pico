@@ -213,3 +213,7 @@ void real_pico_scope(void) {
 
   prev_button_state = current_button_state;
 }
+
+uint8_t real_pico_scope_get_gain(void) {
+  return GAIN_VALUES[current_gain_index];
+}

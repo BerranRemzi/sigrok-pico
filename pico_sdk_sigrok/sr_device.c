@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "hardware/uart.h"
+#include "real_pico_scope.h"
 
 int Dprintf(const char *fmt, ...) {
   va_list argptr;
@@ -26,6 +27,10 @@ int Dprintf(const char *fmt, ...) {
   }
   return len;
 }
+
+// ADC reference and steps used for the host-facing volts-per-step
+#define VREF_UV 3300000LL
+#define ADC_STEPS 128LL
 
 // reset as part of init, or on a completed send
 void reset(sr_device_t *d) {
@@ -55,6 +60,13 @@ void init(sr_device_t *d) {
   d->a_chan_cnt = 0;
   d->d_nps = 0;
   d->cmdstrptr = 0;
+  // default per-channel calibration: unity gain, no divider
+  for (int i = 0; i < NUM_A_CHAN; i++) {
+    d->a_gain_num[i] = 1;
+    d->a_gain_den[i] = 1;
+    d->a_div_num[i] = 1;
+    d->a_div_den[i] = 1;
+  }
 }
 void tx_init(sr_device_t *d) {
   // A reset should have already been called to restart the device.
@@ -142,10 +154,24 @@ int process_char(sr_device_t *d, char charin) {
     case 'a':
       tmpint = atoi(&(d->cmdstr[1])); // extract channel number
       if (tmpint >= 0) {
-        // scale and offset are both in integer uVolts
-        // separated by x
-        sprintf(d->rspstr, "25700x0"); // 3.3/(2^7) and 0V offset
-        // Dprintf("ASCL%d\n\r",tmpint);
+        // scale and offset are both in integer uVolts separated by x
+        // Compute input volts-per-step with selected PGA gain and divider:
+        // Vstep_input = (VREF/ADC_STEPS) * div_den / (div_num * gain)
+        int ch = tmpint;
+        if (ch >= NUM_A_CHAN)
+          ch = 0;
+        (void)ch;
+
+        long long gain = (long long)real_pico_scope_get_gain();
+        if (gain <= 0)
+          gain = 1;
+
+        long long dnum = (long long)REAL_PICO_SCOPE_DIV_NUM;
+        long long dden = (long long)REAL_PICO_SCOPE_DIV_DEN;
+        long long scale_uv =
+            (VREF_UV * dden) / (ADC_STEPS * dnum * gain);
+        sprintf(d->rspstr, "%lldx0", (long long)scale_uv);
+        // Dprintf("ASCL ch %d gain %lld %lld uV/step\n\r", ch, gain, scale_uv);
         ret = 1;
       } else {
         Dprintf("bad ascale %s\n\r", d->cmdstr);

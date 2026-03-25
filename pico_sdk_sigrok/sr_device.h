@@ -69,6 +69,15 @@ typedef struct {
       a_size; // size of each of the two data buffers for each of a& d
   uint32_t dbuf0_start, dbuf1_start, abuf0_start,
       abuf1_start; // starting memory pointers of adc buffers
+  // Per-analog-channel calibration: gain and input divider
+  // Gain is stored as rational a_gain_num / a_gain_den
+  // Divider is stored as fraction a_div_num / a_div_den representing
+  // the fraction seen at the ADC: Vadc = Vin * (a_div_num/a_div_den)
+  // Use integers to avoid floats on the device.
+  int32_t a_gain_num[NUM_A_CHAN];
+  int32_t a_gain_den[NUM_A_CHAN];
+  int32_t a_div_num[NUM_A_CHAN];
+  int32_t a_div_den[NUM_A_CHAN];
   char rspstr[20];
   // mark key control variables volatile since multiple cores might access them
   volatile bool started;
