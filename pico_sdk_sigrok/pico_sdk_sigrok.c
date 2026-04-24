@@ -307,6 +307,7 @@ uint32_t send_slices_D4(sr_device_t *d,uint8_t *dbuf){
     if(rlecnt>7) {
       int rleend=rlecnt&0x3F8;
       txbuf[txbufidx++]=(rleend>>3)+47;
+      rlecnt -= rleend;
     }
     //1..7 RLE 
     //The rle and value encoding counts as both a sample count of rle and a new sample
