@@ -235,6 +235,7 @@ uint32_t send_slices_D4(sr_device_t *d, uint8_t *dbuf) {
   // Subtract 8 because we procesed the word above.
   samp_remain -= 8;
 
+  
   // Process one  word (8 samples) at a time.
   for (int i = 0; i < (samp_remain >> 3); i++) {
     cptr = (uint32_t *)&(dbuf[rxbufdidx]);
@@ -255,80 +256,77 @@ uint32_t send_slices_D4(sr_device_t *d, uint8_t *dbuf) {
         bytecnt += txbufidx;
         txbufidx = 0;
       }
-    }
-    // Coarse rle looks across the full word and allows a faster compare in
-    // cases with low activity factors We must make sure cword==lword and that
-    // all nibbles of cword are the same
-    if ((cword == lword) && ((cword >> 4) == (cword & 0x0FFFFFFF))) {
-      rlecnt += 8;
-#ifdef D4_DBG2
-      Dprintf("coarse word 0x%X\n\r", cword);
-#endif
-    } else { // if coarse rle didn't match
-#ifdef D4_DBG2
-      Dprintf("cword 0x%X nibcurr 0x%X i %d rx idx %u  rlecnt %u \n\r", cword,
-              nibcurr, i, rxbufdidx, rlecnt);
-#endif
-      lword = cword;
-      for (int j = 0; j < 8; j++) { // process all 8 nibbles
-        nibcurr = cword & 0xF;
-        if (nibcurr == niblast) {
-          rlecnt++;
-        } else {
-          // If the value changes we must push all remaing rles to the txbuf
-          // chngcnt++;
-          // Send intermediate 8..632 RLEs
-          if (rlecnt > 7) {
-            int rlemid = rlecnt & 0x3F8;
-            txbuf[txbufidx++] = (rlemid >> 3) + 47;
+      }
+       //Coarse rle looks across the full word and allows a faster compare in cases with low activity factors
+       //We must make sure cword==lword and that all nibbles of cword are the same
+       if((cword==lword)&&((cword>>4)==(cword&0x0FFFFFFF))){
+         rlecnt+=8;
+         #ifdef D4_DBG2
+         Dprintf("coarse word 0x%X\n\r",cword);
+         #endif
+       }
+       else{//if coarse rle didn't match
+         #ifdef D4_DBG2
+        Dprintf("cword 0x%X nibcurr 0x%X i %d rx idx %u  rlecnt %u \n\r",cword,nibcurr,i,rxbufdidx,rlecnt);
+        #endif
+        lword=cword;
+        for (int j=0;j<8;j++){ //process all 8 nibbles
+          nibcurr=cword&0xF;
+          if(nibcurr==niblast) {
+             rlecnt++;
           }
-          // And finally the 0..7 rle along with the new value
-          rlecnt &= 0x7;
-#ifdef D4_DBG2 // print when sample value changes
-          Dprintf("VChang val 0x%X rlecnt %d i%d j%d \n\r", nibcurr, rlecnt, i,
-                  j);
-#endif
-          txbuf[txbufidx++] = 0x80 | nibcurr | rlecnt << 4;
-          rlecnt = 0;
-        } // nibcurr!=last
-        cword >>= 4;
-        niblast = nibcurr;
-      } // for j
-    } // else (not a coarse rle )
-#ifdef D4_DBG2
-    Dprintf("i %d rx idx %u  rlecnt %u \n\r", i, rxbufdidx, rlecnt);
-    Dprintf("i %u tx idx %d bufs 0x%X 0x%X 0x%X\n\r", i, txbufidx,
-            txbuf[txbufidx - 3], txbuf[txbufidx - 2], txbuf[txbufidx - 1]);
-#endif
-    // Emperically found that transmitting groups of around 32B gives optimum
-    // bandwidth
-    if (txbufidx >= 64) {
-      my_stdio_usb_out_chars(txbuf, txbufidx);
-      bytecnt += txbufidx;
-      txbufidx = 0;
+          else{
+            //If the value changes we must push all remaing rles to the txbuf
+            //chngcnt++;
+            //Send intermediate 8..632 RLEs
+            if(rlecnt>7) {
+	       int rlemid=rlecnt&0x3F8;
+               txbuf[txbufidx++]=(rlemid>>3)+47;
+            } 
+            //And finally the 0..7 rle along with the new value
+            rlecnt&=0x7;
+            #ifdef D4_DBG2 //print when sample value changes
+ 	       Dprintf("VChang val 0x%X rlecnt %d i%d j%d \n\r",nibcurr,rlecnt,i,j);
+            #endif		  
+            txbuf[txbufidx++]=0x80|nibcurr|rlecnt<<4;
+            rlecnt=0;
+	  }//nibcurr!=last
+          cword>>=4;
+          niblast=nibcurr;
+        }//for j
+       } //else (not a coarse rle )
+       #ifdef D4_DBG2
+       Dprintf("i %d rx idx %u  rlecnt %u \n\r",i,rxbufdidx,rlecnt);
+       Dprintf("i %u tx idx %d bufs 0x%X 0x%X 0x%X\n\r",i,txbufidx,txbuf[txbufidx-3],txbuf[txbufidx-2],txbuf[txbufidx-1]);
+       #endif
+       //Emperically found that transmitting groups of around 32B gives optimum bandwidth
+       if(txbufidx>=64){
+         my_stdio_usb_out_chars(txbuf,txbufidx);
+         bytecnt+=txbufidx;
+         txbufidx=0;
+       }
+    }//for i in samp_send>>3
+    //At the end of processing the half send any residual samples as we don't maintain state between the halves
+    //Maximal 640 values first
+    while(rlecnt>=640){
+      txbuf[txbufidx++]=127;
+      rlecnt-=640;
     }
-  } // for i in samp_send>>3
-  // At the end of processing the half send any residual samples as we don't
-  // maintain state between the halves Maximal 640 values first
-  while (rlecnt >= 640) {
-    txbuf[txbufidx++] = 127;
-    rlecnt -= 640;
-  }
-  // Middle rles 8..632
-  if (rlecnt > 7) {
-    int rleend = rlecnt & 0x3F8;
-    txbuf[txbufidx++] = (rleend >> 3) + 47;
-  }
-  // 1..7 RLE
-  // The rle and value encoding counts as both a sample count of rle and a new
-  // sample thus we must decrement rlecnt by 1 and resend the current value
-  // which will match the previous values (if the current value didn't match,
-  // the rlecnt would be 0).
-  if (rlecnt) {
-    rlecnt &= 0x7;
-    rlecnt--;
-    txbuf[txbufidx++] = 0x80 | nibcurr | rlecnt << 4;
-    rlecnt = 0;
+    //Middle rles 8..632
+    if(rlecnt>7) {
+      int rleend=rlecnt&0x3F8;
+      txbuf[txbufidx++]=(rleend>>3)+47;
+      rlecnt -= rleend;
+    }
+    //1..7 RLE 
+    //The rle and value encoding counts as both a sample count of rle and a new sample
+    //thus we must decrement rlecnt by 1 and resend the current value which will match the previous values
+    //(if the current value didn't match, the rlecnt would be 0).
+    if(rlecnt){
+      rlecnt&=0x7;
+      rlecnt--;
+      txbuf[txbufidx++]=0x80|nibcurr|rlecnt<<4;
+      rlecnt=0;
   }
   if (txbufidx) {
     my_stdio_usb_out_chars(txbuf, txbufidx);

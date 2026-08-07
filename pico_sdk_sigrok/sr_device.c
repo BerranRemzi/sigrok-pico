@@ -1,3 +1,5 @@
+#include "pico/stdlib.h"
+#include "pico/bootrom.h"
 #include "sr_device.h"
 #include "hardware/uart.h"
 
